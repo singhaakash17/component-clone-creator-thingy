@@ -3,6 +3,15 @@ import React, { useState } from 'react';
 import { towerData, TowerData } from '../data/towerData';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export const TowerRateTable = () => {
   const [filteredTower, setFilteredTower] = useState<string | null>(null);
@@ -38,43 +47,40 @@ export const TowerRateTable = () => {
       </div>
       
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="border-b">
-              <th className="text-left py-3 pr-4 font-semibold">Org</th>
-              <th className="text-left py-3 pr-4 font-semibold">Tower</th>
-              <th className="text-left py-3 pr-4 font-semibold">#Received Responses</th>
-              <th className="text-left py-3 pr-4 font-semibold">
-                <div className="flex items-center">
-                  #Declined Responses
-                </div>
-              </th>
-              <th className="text-left py-3 font-semibold w-1/5"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {orgEntries.map(([org, items], orgIndex) => (
-              <>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Org</TableHead>
+              <TableHead>Tower</TableHead>
+              <TableHead>#Received Responses</TableHead>
+              <TableHead>#Declined Responses</TableHead>
+              <TableHead className="w-1/5"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {orgEntries.map(([org, items]) => (
+              // We need this React.Fragment with key for proper rendering
+              <React.Fragment key={org}>
                 {items.map((item, itemIndex) => (
-                  <tr key={item.id} className="border-b hover:bg-muted/50">
+                  <TableRow key={item.id}>
                     {itemIndex === 0 && (
-                      <td 
-                        className="py-3 pr-4 align-top font-medium" 
+                      <TableCell 
+                        className="font-medium align-top"
                         rowSpan={items.length}
                       >
                         {org}
-                      </td>
+                      </TableCell>
                     )}
-                    <td 
-                      className={cn("py-3 pr-4 cursor-pointer", 
+                    <TableCell 
+                      className={cn("cursor-pointer", 
                         filteredTower === item.tower && "font-medium")}
                       onClick={() => handleTowerClick(item.tower)}
                     >
                       {item.tower}
-                    </td>
-                    <td className="py-3 pr-4">{item.receivedResponses}</td>
-                    <td className="py-3 pr-4">{item.declinedResponses}</td>
-                    <td className="py-3 relative">
+                    </TableCell>
+                    <TableCell>{item.receivedResponses}</TableCell>
+                    <TableCell>{item.declinedResponses}</TableCell>
+                    <TableCell className="relative">
                       <div className="flex items-center w-full">
                         <div 
                           className="bg-blue-800 h-6" 
@@ -82,13 +88,13 @@ export const TowerRateTable = () => {
                         ></div>
                         <span className="ml-2">{item.declinedRate}%</span>
                       </div>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </>
+              </React.Fragment>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </Card>
   );
